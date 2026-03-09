@@ -1051,13 +1051,6 @@ wheels = [
 name = "pyhandlebars"
 source = { editable = "." }
 
-[package.optional-dependencies]
-dev = [
-    { name = "matplotlib" },
-    { name = "pydantic" },
-    { name = "pytest" },
-]
-
 [package.dev-dependencies]
 benchmarks = [
     { name = "ashes", marker = "python_full_version >= '3.12'" },
@@ -1074,14 +1067,13 @@ benchmarks = [
     { name = "tornado", marker = "python_full_version >= '3.12'" },
     { name = "wheezy-template", marker = "python_full_version >= '3.12'" },
 ]
+dev = [
+    { name = "matplotlib" },
+    { name = "pydantic" },
+    { name = "pytest" },
+]
 
 [package.metadata]
-requires-dist = [
-    { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.10.8" },
-    { name = "pydantic", marker = "extra == 'dev'", specifier = ">=2.12.5" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
-]
-provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 benchmarks = [
@@ -1098,6 +1090,11 @@ benchmarks = [
     { name = "tenjin", marker = "python_full_version >= '3.12'", specifier = ">=1.1.1" },
     { name = "tornado", marker = "python_full_version >= '3.12'", specifier = ">=6.5.4" },
     { name = "wheezy-template", marker = "python_full_version >= '3.12'", specifier = ">=3.2.5" },
+]
+dev = [
+    { name = "matplotlib", specifier = ">=3.10.8" },
+    { name = "pydantic", specifier = ">=2.12.5" },
+    { name = "pytest", specifier = ">=9.0.2" },
 ]
 
 [[package]]
