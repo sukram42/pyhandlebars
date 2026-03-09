@@ -5,22 +5,32 @@ build-backend = "maturin"
 [project]
 name = "pyhandlebars"
 requires-python = ">=3.10"
+description = "Python bindings for the Handlebars templating language, powered by handlebars-rust"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "sukram42" }]
+keywords = ["handlebars", "template", "rust", "pyo3", "prompt", "prompt-template"]
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Text Processing :: Markup",
 ]
 dynamic = ["version"]
 dependencies = []
 
-[project.optional-dependencies]
+[project.urls]
+Homepage = "https://github.com/sukram42/pyhandlebars"
+Repository = "https://github.com/sukram42/pyhandlebars"
+Issues = "https://github.com/sukram42/pyhandlebars/issues"
+
+[dependency-groups]
 dev = [
     "matplotlib>=3.10.8",
     "pytest>=9.0.2",
     "pydantic>=2.12.5",
 ]
-
-[dependency-groups]
 benchmarks = [
     "pydantic>=2.12.5",
     "pybars3>=0.9.7",
