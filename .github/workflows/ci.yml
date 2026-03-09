@@ -92,7 +92,7 @@ jobs:
       id-token: write
     environment:
       name: pypi
-      url: https://pypi.org/project/pyhandlebars
+      url: https://pypi.org/sukram42/pyhandlebars
 
     steps:
       - name: Download all artifacts
