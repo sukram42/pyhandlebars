@@ -16,8 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -27,14 +27,14 @@ jobs:
       - name: Cache Rust build artifacts
         uses: Swatinem/rust-cache@v2
 
-      - name: Install maturin
-        run: pip install maturin
+      - name: Install dependencies
+        run: uv sync --extra dev
 
       - name: Build and install package (dev mode)
-        run: maturin develop --extras dev
+        run: uvx maturin develop
 
       - name: Run tests
-        run: pytest tests/
+        run: uv run pytest tests/
 
       - name: Build wheel
-        run: maturin build --release
+        run: uvx maturin build --release
