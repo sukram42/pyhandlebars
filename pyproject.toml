@@ -20,6 +20,9 @@ dev = [
     "pytest>=9.0.2",
 ]
 
+[tool.uv]
+default-groups = ["dev"]
+
 [dependency-groups]
 benchmarks = [
     "pydantic>=2.12.5",
