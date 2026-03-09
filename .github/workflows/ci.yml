@@ -55,6 +55,7 @@ jobs:
         with:
           args: --release --out dist --interpreter 3.10 3.11 3.12 3.13
           manylinux: auto
+          upload-url: ${{ github.event.release.upload_url }}
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
