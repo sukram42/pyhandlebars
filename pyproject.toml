@@ -1,0 +1,42 @@
+[build-system]
+requires = ["maturin>=1.12,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "pyhandlebars"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "pydantic>=2.12.5",
+    "pytest>=9.0.2",
+]
+
+[dependency-groups]
+benchmarks = [
+    "pydantic>=2.12.5",
+    "pybars3>=0.9.7",
+    "jinja2>=3.0.0",
+    "mako>=1.3.10",
+    "ashes>=24.0.0",
+    "django>=6.0.3",
+    "tenjin>=1.1.1",
+    "wheezy-template>=3.2.5",
+    "chevron>=0.14.0",
+    "pystache>=0.6.8",
+    "cheetah3>=3.2.6.post1",
+    "tornado>=6.5.4",
+    "bottle>=0.13.4",
+]
+dev = [
+    "matplotlib>=3.10.8",
+    "pytest>=9.0.2",
+]
