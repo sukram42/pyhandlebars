@@ -96,7 +96,7 @@ We benchmarked PyHandlebars against 13 other Python template engines across 4 ex
 
 Each box shows the render-time distribution across 1,000 runs. Tools are sorted fastest → slowest by average render time. The top chart uses a linear scale; the bottom uses a log scale to make differences between fast engines visible.
 
-![Benchmark summary](plots/benchmark_summary.png)
+![Benchmark summary](benchmarks/plots/benchmark_summary.png)
 
 ## Contribution
 Any contribution to this library is welcomed. To get started into development! When you run into any problems, feel free to reach out to me.

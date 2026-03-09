@@ -28,7 +28,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Install dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --no-group benchmarks
 
       - name: Build and install package (dev mode)
         run: uvx maturin develop
