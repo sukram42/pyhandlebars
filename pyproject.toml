@@ -4,24 +4,21 @@ build-backend = "maturin"
 
 [project]
 name = "pyhandlebars"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
-dependencies = [
-]
+dependencies = []
 
 [project.optional-dependencies]
 dev = [
-    "pydantic>=2.12.5",
+    "matplotlib>=3.10.8",
     "pytest>=9.0.2",
+    "pydantic>=2.12.5",
 ]
-
-[tool.uv]
-default-groups = ["dev"]
 
 [dependency-groups]
 benchmarks = [
@@ -39,7 +36,6 @@ benchmarks = [
     "tornado>=6.5.4",
     "bottle>=0.13.4",
 ]
-dev = [
-    "matplotlib>=3.10.8",
-    "pytest>=9.0.2",
-]
+
+[tool.uv.dependency-groups]
+benchmarks = {requires-python = ">=3.12"}
