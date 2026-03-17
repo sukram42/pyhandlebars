@@ -2,7 +2,13 @@
 
 Python library for the [handlebars](https://handlebarsjs.com) templating language. It is a small wrapper around the [handlebars-rust](https://github.com/sunng87/handlebars-rust) library.
 
-> **Shoutout to all maintainers contributors of [handlebars-rust](https://github.com/sunng87/handlebars-rust)** — the fast, battle-tested Rust engine that powers this library. The performance wins you see in the benchmarks below are their achievement. Please consider giving the project a star!
+
+
+## Installation
+Pyhandlebars is listed on [PyPi](https://pypi.org/project/pyhandlebars/): 
+```sh
+pip install pyhandlebars
+```
 
 ## Getting Start
 
