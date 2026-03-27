@@ -251,7 +251,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -1063,6 +1063,7 @@ benchmarks = [
     { name = "pybars3", marker = "python_full_version >= '3.12'" },
     { name = "pydantic", marker = "python_full_version >= '3.12'" },
     { name = "pystache", marker = "python_full_version >= '3.12'" },
+    { name = "python-handlebars", marker = "python_full_version >= '3.12'" },
     { name = "tenjin", marker = "python_full_version >= '3.12'" },
     { name = "tornado", marker = "python_full_version >= '3.12'" },
     { name = "wheezy-template", marker = "python_full_version >= '3.12'" },
@@ -1087,6 +1088,7 @@ benchmarks = [
     { name = "pybars3", marker = "python_full_version >= '3.12'", specifier = ">=0.9.7" },
     { name = "pydantic", marker = "python_full_version >= '3.12'", specifier = ">=2.12.5" },
     { name = "pystache", marker = "python_full_version >= '3.12'", specifier = ">=0.6.8" },
+    { name = "python-handlebars", marker = "python_full_version >= '3.12'", specifier = ">=0.0.3" },
     { name = "tenjin", marker = "python_full_version >= '3.12'", specifier = ">=1.1.1" },
     { name = "tornado", marker = "python_full_version >= '3.12'", specifier = ">=6.5.4" },
     { name = "wheezy-template", marker = "python_full_version >= '3.12'", specifier = ">=3.2.5" },
@@ -1149,6 +1151,27 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432, upload-time = "2024-03-01T18:36:20.211Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892, upload-time = "2024-03-01T18:36:18.57Z" },
+]
+
+[[package]]
+name = "python-handlebars"
+version = "0.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-ometa", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9e/49/44befc1fd566cc7779b34307a5fe6e6e47747505dc4984085e97664ee1ae/python_handlebars-0.0.3.tar.gz", hash = "sha256:7645b77600475ecd40e15e9abe3f4aecf3092b698673bee52a98d41f136c4f97", size = 31465, upload-time = "2024-07-30T13:55:37.67Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/9d/f99ef7d7816e3e1e2234d44c5b236c3796f848701edcc81db8f5ec0454e2/python_handlebars-0.0.3-py3-none-any.whl", hash = "sha256:3f2474acb0736e51c221d5f39854df5a95d662d9af87109317f8eb1b32da5a60", size = 16395, upload-time = "2024-07-30T13:55:36.147Z" },
+]
+
+[[package]]
+name = "python-ometa"
+version = "0.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c8/c6/aa85cf50f5be477b346abe87c0f1e4a069993f53c2c3e2a9172841fdaa77/python_ometa-0.0.1.tar.gz", hash = "sha256:bfd5c1ee15f0f6953e99c946d5a7f8828f77d04c37d4c769e750ce3381de9653", size = 29657, upload-time = "2024-07-30T13:19:05.855Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d0/50/889686e8b0b8eca8d602a1c9cbdfad93957532d32735b9acff3900e08792/python_ometa-0.0.1-py3-none-any.whl", hash = "sha256:c4fc345a9059385501365bb3cbb15ec41a0ed7a5974d83bf96bf34148275a8bb", size = 24295, upload-time = "2024-07-30T13:19:04.103Z" },
 ]
 
 [[package]]

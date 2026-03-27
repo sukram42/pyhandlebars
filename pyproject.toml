@@ -18,7 +18,8 @@ classifiers = [
     "Topic :: Text Processing :: Markup",
 ]
 dynamic = ["version"]
-dependencies = []
+dependencies = [
+]
 
 [project.urls]
 Homepage = "https://github.com/sukram42/pyhandlebars"
@@ -34,6 +35,7 @@ dev = [
 benchmarks = [
     "pydantic>=2.12.5",
     "pybars3>=0.9.7",
+    "python-handlebars>=0.0.3",
     "jinja2>=3.0.0",
     "mako>=1.3.10",
     "ashes>=24.0.0",

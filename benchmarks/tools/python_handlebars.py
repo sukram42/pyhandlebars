@@ -1,4 +1,4 @@
-from pybars import Compiler
+from handlebars import Compiler
 
 from benchmarks.fixtures import BenchCase, DeploymentReport, Fixture, Invoice, UserProfile
 
@@ -49,14 +49,8 @@ def bench_deployment_report(fixture: Fixture[DeploymentReport]) -> BenchCase:
     )
 
 
-
-
-
-
 def bench_release_report(fixture):
     from benchmarks.fixtures import ReleaseReport  # noqa: F401
-    # pybars3 strips \n that immediately precedes {{/each}} when it follows {{/if}}.
-    # Workaround: embed \n inside status_full and remove it from the template line.
     template_str = (
         "Release v{{version}} — {{project}}{{#if hotfix}} [HOTFIX]{{/if}}\n"
         "Team: {{team.name}} | Lead: {{team.lead.name}} ({{team.lead.email}})\n"
@@ -68,16 +62,10 @@ def bench_release_report(fixture):
         "{{/each}}"
         "Environments:\n"
         "{{#each environments}}"
-        "- {{name}}: {{status_full}}"
+        "- {{name}}: {{status}}{{#if deployed_at}} on {{deployed_at}}{{/if}}\n"
         "{{/each}}"
     )
-    def render(t):
-        d = fixture.data.model_dump()
-        for env in d["environments"]:
-            suffix = f" on {env['deployed_at']}" if env["deployed_at"] else ""
-            env["status_full"] = env["status"] + suffix + "\n"
-        return t(d)
     return BenchCase(
         prepare=lambda: Compiler().compile(template_str),
-        render=render,
+        render=lambda t: t(fixture.data.model_dump()),
     )

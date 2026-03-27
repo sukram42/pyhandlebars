@@ -26,6 +26,7 @@ FIXTURES: list[Fixture] = [invoice, profile, report, release]
 TOOLS: list[str] = [
     "benchmarks.tools.pyhandlebars",
     "benchmarks.tools.pybars3",
+    "benchmarks.tools.python_handlebars",
     "benchmarks.tools.jinja2",
     "benchmarks.tools.mako",
     "benchmarks.tools.ashes",
