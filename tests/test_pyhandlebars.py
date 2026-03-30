@@ -75,6 +75,24 @@ def test_helper_return_value_used_in_output():
     assert t.format({"name": "hello"}) == "HELLO"
 
 
+def test_helper_decorator():
+    client = PyHandlebars()
+
+    @client.helper(name="shout")
+    def shout(params, data):
+        return params[0].upper() + "!"
+
+    t1: Template[dict] = Template("{{shout name}}", client=client)
+    assert t1.format({"name": "hello"}) == "HELLO!"
+
+    @client.helper()
+    def shouty(params, data):
+        return params[0].upper() + "?"
+
+    t2: Template[dict] = Template("{{shouty name}}", client=client)
+    assert t2.format({"name": "hello"}) == "HELLO?"
+
+
 def test_benchmark_format_dict():
     n = 1_000
     t: Template[dict] = Template("hello {{name}}")

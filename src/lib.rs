@@ -1,5 +1,5 @@
-use pyo3::prelude::*;
 use pyo3::types::PyAnyMethods;
+use pyo3::{prelude::*, types::PyCFunction};
 
 use handlebars::{
     Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext, RenderError,
@@ -85,6 +85,28 @@ impl PyHandlebars {
 
     fn register_helper(&mut self, name: &str, func: Py<PyAny>) {
         self.client.register_helper(name, Box::new(PyHelper(func)));
+    }
+
+    #[pyo3(signature=(*, name=None))]
+    fn helper(
+        slf: Py<PyHandlebars>,
+        py: Python<'_>,
+        name: Option<String>,
+    ) -> PyResult<Bound<'_, PyCFunction>> {
+        PyCFunction::new_closure(py, None, None, move |args, _kwargs| {
+            let func = args.get_item(0)?;
+            let resolved_name = match &name {
+                Some(n)=>n.clone(),
+                None =>func.getattr("__name__")?.extract::<String>()?
+            };
+
+            let py = args.py();
+            let func_clone = func.clone();
+            slf.borrow_mut(py)
+                .client
+                .register_helper(&resolved_name, Box::new(PyHelper(func_clone.unbind())));
+            Ok::<_, PyErr>(func.unbind())
+        })
     }
 }
 
