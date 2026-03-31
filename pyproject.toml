@@ -5,11 +5,11 @@ build-backend = "maturin"
 [project]
 name = "pyhandlebars"
 requires-python = ">=3.10"
-description = "Python bindings for the Handlebars templating language, powered by handlebars-rust"
+description = "Fast and Typed Python Implementation for Handlebars based on Rust."
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "sukram42" }]
-keywords = ["handlebars", "template", "rust", "pyo3", "prompt", "prompt-template"]
+keywords = ["python-handlebars", "pyhandlebars", "handlebars", "template", "rust", "prompt", "prompt-template", "pydantic"]
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
