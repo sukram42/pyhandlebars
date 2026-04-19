@@ -38,25 +38,68 @@ def test_simple_pydantic_support():
     assert rendered_text == "This is Alice!"
 ```
 
-### 3. Adding Helper Functions
-PyHandlebars allows you to register your own helper functions. However, keep in mind that these are not as fast and
-performant as built-in helpers.  
+### 3. Default Global Client
+
+Every `Template` created without an explicit `client=` argument shares a single process-wide global client. This means partials and helpers registered on one template are immediately available to all other templates that use the default client.
 
 ```python
-    def test_custom_helper():
-    from pyhandlebars import PyHandlebars, Template
+from pyhandlebars import Template
 
-    # 1. Define the helper function.
-    def shout(params: list[str], context: dict):
-        return f"{params[0].upper()} from {context['location']}"
-
-    client = PyHandlebars()
-    client.register_helper("shout", shout)
-
-    t: Template[dict] = Template("{{shout name}}", client=client)
-    assert t.format({"name": "Alice", "location": "Wonderland"}) == "ALICE from Wonderland"
+# Both templates share the global client — the partial is visible to t2.
+_ = Template("Hi {{name}}", name="greeting")
+t = Template("{{> greeting}}")
+print(t.format({"name": "Bob"}))  # Hi Bob
 ```
-### 4. More Examples
+
+### 4. Adding Helper Functions
+PyHandlebars allows you to register your own helper functions. However, keep in mind that these are not as fast and
+performant as built-in helpers.
+
+Each helper receives two arguments: `params` (a list of positional arguments from the template call) and `context` (the full data object passed to `format`).
+
+**Option A — `PyHandlebars.helper` on the global client**
+
+Access `helper` on the *class* (not an instance) to register directly on the global client — no explicit `PyHandlebars()` needed.
+
+```python
+from pyhandlebars import PyHandlebars, Template
+
+@PyHandlebars.helper
+def shout(params: list, context: dict):
+    return f"{params[0].upper()} from {context['location']}"
+
+# Supply a custom template name with name=
+@PyHandlebars.helper(name="whisper")
+def my_whisper_fn(params: list, context: dict):
+    return params[0].lower()
+
+t = Template("{{shout name}} / {{whisper name}}")
+assert t.format({"name": "Alice", "location": "Wonderland"}) == "ALICE from Wonderland / alice"
+```
+
+**Option B — `register_helper` / `@client.helper()` on a dedicated client**
+
+Use an explicit `PyHandlebars()` instance when you want helpers isolated from the global client.
+
+```python
+from pyhandlebars import PyHandlebars, Template
+
+def shout(params: list, context: dict):
+    return f"{params[0].upper()} from {context['location']}"
+
+client = PyHandlebars()
+client.register_helper("shout", shout)
+
+# Decorator style:
+@client.helper()
+def whisper(params: list, context: dict):
+    return params[0].lower()
+
+t = Template("{{shout name}} / {{whisper name}}", client=client)
+assert t.format({"name": "Alice", "location": "Wonderland"}) == "ALICE from Wonderland / alice"
+```
+
+### 5. More Examples
 More examples can be found in the tests/test_examples.py file.
 
 ## Supported Template Functions 

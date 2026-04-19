@@ -1,3 +1,6 @@
+use std::sync::OnceLock;
+
+use pyo3::pyclass;
 use pyo3::types::PyAnyMethods;
 use pyo3::{prelude::*, types::PyCFunction};
 
@@ -67,6 +70,87 @@ impl HelperDef for PyHelper {
     }
 }
 
+fn _register(
+    py: Python<'_>,
+    target: Py<PyHandlebars>,
+    name: Option<String>,
+    func: Bound<'_, PyAny>,
+) -> Result<Py<PyAny>, PyErr> {
+    let func_clone = func.clone();
+    let resolved_name = match name {
+        Some(n) => n,
+        None => func_clone.getattr("__name__")?.extract::<String>()?,
+    };
+
+    target
+        .borrow_mut(py)
+        .register_helper(&resolved_name, func.unbind());
+    Ok(func_clone.unbind())
+}
+
+#[pyclass]
+struct HelperMethod;
+
+#[pymethods]
+impl HelperMethod {
+    fn __get__<'py>(
+        &self,
+        py: Python<'py>,
+        obj: Option<Py<PyHandlebars>>,
+        _cls: Option<&Bound<'_, PyAny>>,
+    ) -> PyResult<Bound<'py, PyCFunction>> {
+        let target: Py<PyHandlebars> = match obj {
+            Some(instance) => instance,
+            None => global_client(py)?,
+        };
+
+        PyCFunction::new_closure(py, None, None, move |args: &Bound<'_, pyo3::types::PyTuple>, kwargs: Option<&Bound<'_, pyo3::types::PyDict>>| {
+            let raw_func = args.get_item(0).ok();
+            let name: Option<String> = match kwargs {
+                Some(kw) => kw
+                    .get_item("name")?
+                    .map(|v: Bound<'_, PyAny>| v.extract::<String>())
+                    .transpose()?,
+                None => None,
+            };
+
+            let target_none = target.clone_ref(args.py());
+
+            match raw_func {
+                Some(f) => _register(args.py(), target.clone_ref(args.py()), name, f),
+                None => {
+                    let new_f =
+                        PyCFunction::new_closure(args.py(), None, None, move |args: &Bound<'_, pyo3::types::PyTuple>, _kwargs: Option<&Bound<'_, pyo3::types::PyDict>>| {
+                            let raw_func = args.get_item(0)?;
+                            _register(
+                                args.py(),
+                                target_none.clone_ref(args.py()),
+                                name.clone(),
+                                raw_func,
+                            )
+                        })?;
+                    Ok(new_f.into_any().unbind())
+                }
+            }
+        })
+    }
+}
+
+static GLOBAL_CLIENT: OnceLock<Py<PyHandlebars>> = OnceLock::new();
+
+fn global_client(py: Python<'_>) -> PyResult<Py<PyHandlebars>> {
+    let client = GLOBAL_CLIENT.get_or_init(|| {
+        Py::new(
+            py,
+            PyHandlebars {
+                client: Handlebars::new(),
+            },
+        )
+        .expect("failed to create global client")
+    });
+    Ok(client.clone_ref(py))
+}
+
 #[pyclass]
 struct PyHandlebars {
     client: Handlebars<'static>,
@@ -87,27 +171,32 @@ impl PyHandlebars {
         self.client.register_helper(name, Box::new(PyHelper(func)));
     }
 
-    #[pyo3(signature=(*, name=None))]
-    fn helper(
-        slf: Py<PyHandlebars>,
-        py: Python<'_>,
-        name: Option<String>,
-    ) -> PyResult<Bound<'_, PyCFunction>> {
-        PyCFunction::new_closure(py, None, None, move |args, _kwargs| {
-            let func = args.get_item(0)?;
-            let resolved_name = match &name {
-                Some(n)=>n.clone(),
-                None =>func.getattr("__name__")?.extract::<String>()?
-            };
-
-            let py = args.py();
-            let func_clone = func.clone();
-            slf.borrow_mut(py)
-                .client
-                .register_helper(&resolved_name, Box::new(PyHelper(func_clone.unbind())));
-            Ok::<_, PyErr>(func.unbind())
-        })
+    #[classattr]
+    fn helper(py: Python<'_>) -> PyResult<Py<HelperMethod>> {
+        Py::new(py, HelperMethod)
     }
+
+    // #[pyo3(signature=(*, name=None))]
+    // fn helper(
+    //     slf: Py<PyHandlebars>,
+    //     py: Python<'_>,
+    //     name: Option<String>,
+    // ) -> PyResult<Bound<'_, PyCFunction>> {
+    //     PyCFunction::new_closure(py, None, None, move |args, _kwargs| {
+    //         let func = args.get_item(0)?;
+    //         let resolved_name = match &name {
+    //             Some(n) => n.clone(),
+    //             None => func.getattr("__name__")?.extract::<String>()?,
+    //         };
+
+    //         let py = args.py();
+    //         let func_clone = func.clone();
+    //         slf.borrow_mut(py)
+    //             .client
+    //             .register_helper(&resolved_name, Box::new(PyHelper(func_clone.unbind())));
+    //         Ok::<_, PyErr>(func.unbind())
+    //     })
+    // }
 }
 
 fn render_error_to_py(e: RenderError) -> PyErr {
@@ -144,12 +233,7 @@ impl Template {
     ) -> PyResult<Self> {
         let client = match client {
             Some(c) => c,
-            None => Py::new(
-                py,
-                PyHandlebars {
-                    client: Handlebars::new(),
-                },
-            )?,
+            None => global_client(py)?,
         };
         let key = make_template_name(name);
         client
@@ -173,12 +257,7 @@ impl Template {
         let path_str: String = path.str()?.extract()?;
         let client = match client {
             Some(c) => c,
-            None => Py::new(
-                py,
-                PyHandlebars {
-                    client: Handlebars::new(),
-                },
-            )?,
+            None => global_client(py)?,
         };
         client
             .borrow_mut(py)
