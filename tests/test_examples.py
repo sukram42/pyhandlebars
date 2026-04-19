@@ -169,3 +169,39 @@ def test_custom_helper():
 
     t: Template[dict] = Template("{{shout name}}", client=client)
     assert t.format({"name": "Alice", "location": "Wonderland"}) == "ALICE from Wonderland"
+
+
+def test_global_client_helper_decorator():
+    # PyHandlebars.helper used at the class level registers on the shared global client,
+    # so no explicit PyHandlebars() instance is needed.
+    from pyhandlebars import PyHandlebars, Template
+
+    @PyHandlebars.helper
+    def exclaim(params: list[str], context: dict):
+        return f"{params[0]}!"
+
+    t: Template[dict] = Template("{{exclaim greeting}}")
+    assert t.format({"greeting": "Hello"}) == "Hello!"
+
+
+def test_global_client_helper_decorator_with_name():
+    # The name= kwarg overrides the function name used in templates.
+    from pyhandlebars import PyHandlebars, Template
+
+    @PyHandlebars.helper(name="loud")
+    def make_loud(params: list[str], context: dict):
+        return params[0].upper()
+
+    t: Template[dict] = Template("{{loud word}}")
+    assert t.format({"word": "hello"}) == "HELLO"
+
+
+def test_global_client_shared_partials():
+    # Templates registered without an explicit client share the same global client,
+    # so partials work across Template instances created independently.
+    from pyhandlebars import Template
+
+    _ = Template("Hi {{name}}", name="greeting")
+    t: Template[dict] = Template("{{> greeting}}")
+
+    assert t.format({"name": "Bob"}) == "Hi Bob"

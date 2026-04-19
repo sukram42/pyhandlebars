@@ -92,6 +92,37 @@ def test_helper_decorator():
     t2: Template[dict] = Template("{{shouty name}}", client=client)
     assert t2.format({"name": "hello"}) == "HELLO?"
 
+    @client.helper
+    def shout3(params, data):
+        return params[0].upper() + "?"
+
+    t3: Template[dict] = Template("{{shout3 name}}", client=client)
+    assert t3.format({"name": "hello"}) == "HELLO?"
+
+
+def test_helper_without_client():
+
+    @PyHandlebars.helper
+    def shout(params, data):
+        return params[0].upper() + "!"
+
+    t1: Template[dict] = Template("{{shout name}}")
+    assert t1.format({"name": "hello"}) == "HELLO!"
+
+    @PyHandlebars.helper()
+    def shout1(params, data):
+        return params[0].upper() + "!"
+
+    t2: Template[dict] = Template("{{shout1 name}}")
+    assert t2.format({"name": "hello"}) == "HELLO!"
+
+    @PyHandlebars.helper(name="aliasshout")
+    def shout2(params, data):
+        return params[0].upper() + "!"
+
+    t3: Template[dict] = Template("{{aliasshout name}}")
+    assert t3.format({"name": "hello"}) == "HELLO!"
+
 
 def test_benchmark_format_dict():
     n = 1_000
